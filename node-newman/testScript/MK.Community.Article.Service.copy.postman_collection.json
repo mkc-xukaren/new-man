@@ -1,0 +1,630 @@
+{
+	"variables": [],
+	"info": {
+		"name": "MK Community Article Service copy",
+		"_postman_id": "7e14dbe8-d2ce-e0d4-dd06-4cb38cf3e381",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LoginAndGetToken",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var responseJSON = JSON.parse(responseBody);\npostman.setGlobalVariable('MKC_Test_Access_Token', responseJSON.access_token);\ntests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://community-user-management-external-latest.dev.pcf.mkc.io/v1/login",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "DeviceID",
+							"value": "1ef93487-9d96-4c41-a011-982fa15bfa4a",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "LoginType",
+							"value": "PhoneNumber",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "LoginName",
+							"value": "13603391747",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "Password",
+							"value": "pass@word1",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "CreateResourceRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var responseJSON = JSON.parse(responseBody);\npostman.setGlobalVariable('MKC_Test_ResourceID', responseJSON.Id);\npostman.setGlobalVariable('MKC_Test_XAmzDate', responseJSON.XAmzDate);\npostman.setGlobalVariable('MKC_Test_URI', responseJSON.URI);\npostman.setGlobalVariable('MKC_Test_Authorization', responseJSON.Authorization);\ntests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Resource",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "resourceType",
+							"value": "Text",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "text",
+							"value": "hello",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GetResourceListRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Resource?ids={{MKC_Test_ResourceID}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "Find resource by Ids"
+			},
+			"response": []
+		},
+		{
+			"name": "SetResourceUploadCompleteRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Resource/SetComplete/PUT",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "Id",
+							"value": "{{MKC_Test_ResourceID}}",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Set resource as complete status after finished uploading to s3"
+			},
+			"response": []
+		},
+		{
+			"name": "SetResourcePublicRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200 or 400\"] = responseCode.code === 200 || responseCode.code === 400;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Resource/SetPublic/Put",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "Id",
+							"value": "{{MKC_Test_ResourceID}}",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Set resource as public status after finished uploading to s3"
+			},
+			"response": []
+		},
+		{
+			"name": "CreateArticleRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "var responseJSON = JSON.parse(responseBody);\npostman.setGlobalVariable('MKC_Test_ArticleID', responseJSON.ArticleId);\ntests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Articles",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "title",
+							"value": "my title",
+							"type": "text"
+						},
+						{
+							"key": "DisplayName",
+							"value": "kitty",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "AvatarUrl",
+							"value": "http://pic5.nipic.com/20100115/2954235_235240376340_2.jpg",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "homePageTitle",
+							"value": "home page title",
+							"type": "text"
+						},
+						{
+							"key": "resourceIds",
+							"value": "[{{MKC_Test_ResourceID}},{{MKC_Test_ResourceID}}]",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Create article"
+			},
+			"response": []
+		},
+		{
+			"name": "GetArticleInfoRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Articles?ids={{MKC_Test_ArticleID}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "Find article by Id"
+			},
+			"response": []
+		},
+		{
+			"name": "GetArticleDetailInfoRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200 or 404\"] = responseCode.code === 200 || responseCode.code === 404;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Articles/Detail?ids={{MKC_Test_ArticleID}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "Find article detail info by Id(for update)"
+			},
+			"response": []
+		},
+		{
+			"name": "GetArticleListRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Articles/List?ids={{MKC_Test_ArticleID}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "Find article list"
+			},
+			"response": []
+		},
+		{
+			"name": "SearchArticleRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Article/Search?Keywords=test",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "Global article search"
+			},
+			"response": []
+		},
+		{
+			"name": "QueryArticlesByUserRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = (responseCode.code === 200 || responseCode.code === 404);"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Articles/MyArticles",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "Query article by user"
+			},
+			"response": []
+		},
+		{
+			"name": "QueryArticlesCountByUserRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = (responseCode.code === 200 || responseCode.code === 404);"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Articles/MyArticles/Count",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "Query article count by user"
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateArticleRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Articles/PUT",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "id",
+							"value": "{{MKC_Test_ArticleID}}",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "title",
+							"value": "title",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "homePageTitle",
+							"value": "home page title",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "resourceIds",
+							"value": "[{{MKC_Test_ResourceID}}]",
+							"type": "text",
+							"enabled": true
+						},
+						{
+							"key": "price",
+							"value": "10",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Update article"
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteArticleRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Articles/Delete",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "id",
+							"value": "{{MKC_Test_ArticleID}}",
+							"type": "text"
+						}
+					]
+				},
+				"description": "Delete article"
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteResourceRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+					}
+				}
+			],
+			"request": {
+				"url": "http://Community-Article-External-API-latest.dev.pcf.mkc.io/v1/Resource/Delete",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{MKC_Test_Access_Token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "id",
+							"value": "{{MKC_Test_ResourceID}}",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"enabled": true
+						}
+					]
+				},
+				"description": "Delete article element"
+			},
+			"response": []
+		}
+	]
+}
