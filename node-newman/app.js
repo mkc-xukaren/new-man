@@ -12,8 +12,8 @@ var newman = require('newman'), fs = require('fs');
 		 for (var index = 0; index < 20; index++){
 			 console.log("run test: " + index)
 			 newman.run({
-				 //collection: require(`${__dirname}/testScript/${file}`),
-				 collection: require('./testScript/MK.Community.Article.Service.copy.postman_collection.json'),
+				 collection: require(`${__dirname}/testScript/${file}`),
+				 //collection: require('./testScript/MK.Community.Article.Service.copy.postman_collection.json'),
 				 iterationCount: 2,
 				 reporters: 'json'
 			 }, function (err) {
