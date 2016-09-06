@@ -1,13 +1,16 @@
 var newman = require('newman'); // require newman in your project
 var fs=require('fs');
 
-var file_name = './testScript/MK.Community.Article.Service.copy.postman_collection.json'
-console.log("run test: " + file_name)
-var collection = require(file_name)
+var file_name = './testScript/MK.Community.Weather.API.postman_collection.json';
+var file_environment='./testScript/MK.Community.Weather.API.postman_environment.json';
+//console.log("run test: " + file_name);
+
+var collection = require(file_name);
+var file_environment=require(file_environment);
 
 var promises = [];
 
-for (var index = 0; index < 2; index++) {
+for (var index = 0; index < 5; index++) {
     promises.push(run_test_script())
 }
 
@@ -24,7 +27,8 @@ function run_test_script() {
     return new Promise(function (resolve, reject) {
         newman.run({
             collection: collection,
-            iterationCount: 2,
+            environment:file_environment,
+            iterationCount: 1,
             reporters: 'json'
         }, function (err) {
             if (err) { return reject(err) }
