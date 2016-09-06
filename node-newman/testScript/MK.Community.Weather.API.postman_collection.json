@@ -1,0 +1,163 @@
+{
+	"variables": [],
+	"info": {
+		"name": "MK.Community.Weather.API",
+		"_postman_id": "4faa3ad8-d074-b716-e809-2c1839db7539",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetWeather",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\n\ntests[\"Result is false\"] = jsonData.Result === true;\n\nif(jsonData.WeatherInfo.WeatherImageName.length>0)\n{\n    tests[\"Result is not null\"] = true === true;\n}else{\n    tests[\"Result is null\"] = false === true;\n}"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": "postman.setGlobalVariable(\"url\", \"https://community-weather-api-latest.dev.pcf.mkc.io/v1\");"
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/weather/areaName?CountyName=大邑县&CityName=成都市",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer7A7BD434-C482-4F85-8029-39C6A38C8D23",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": "GetWeather"
+			},
+			"response": []
+		},
+		{
+			"name": "GetWeatherCountyIsNull",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\n\ntests[\"Result is false\"] = jsonData.Result === false;\n"
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/weather/areaName?CityName=成都市",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer7A7BD434-C482-4F85-8029-39C6A38C8D23",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GetWeatherCityName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 400\"] = responseCode.code === 400;\n\nvar jsonData = JSON.parse(responseBody);\n\ntests[\"Result is false\"] = jsonData.Result === false;"
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/weather/areaName?CountyName=大邑县",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer7A7BD434-C482-4F85-8029-39C6A38C8D23",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GetWeatherCountyNameWrong",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\n\ntests[\"Result is false\"] = jsonData.Result === true;"
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/weather/areaName?CountyName=大邑1县&CityName=成都市",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer7A7BD434-C482-4F85-8029-39C6A38C8D23",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GetWeatherCityNameWrong",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;\n\nvar jsonData = JSON.parse(responseBody);\n\ntests[\"Result is false\"] = jsonData.Result === false;"
+					}
+				}
+			],
+			"request": {
+				"url": "{{url}}/weather/areaName?CountyName=大邑县&CityName=成都市1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer7A7BD434-C482-4F85-8029-39C6A38C8D23",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
