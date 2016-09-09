@@ -1,16 +1,22 @@
 var newman = require('newman'); // require newman in your project
 var fs=require('fs');
 
-var file_name = './testScript/MK.Community.Weather.API.postman_collection.json';
-var file_environment='./testScript/MK.Community.Weather.API.postman_environment.json';
+var file_name = './testScript/MK_Community_Share_Internal_Service.json';
+//var file_environment='./testScript/MK.Community.Weather.API.postman_environment.json';
 //console.log("run test: " + file_name);
 
 var collection = require(file_name);
-var file_environment=require(file_environment);
+//var file_environments=require(file_environment);
+
+var csv = require('fast-csv');
+
+var async = require("async");
 
 var promises = [];
 
-for (var index = 0; index < 5; index++) {
+//process.env.UV_THREADPOOL_SIZE = 10
+
+for (var index = 0; index <1; index++) {
     promises.push(run_test_script())
 }
 
@@ -19,17 +25,20 @@ Promise.all(promises).then(function() {
     console.log("" )
     getResult();
 
+
 }, function(err) {
     // error occurred
-});
+}).then(function(){
+   // deleteFile('./newman')
+},function(err){});
 
 function run_test_script() {
     return new Promise(function (resolve, reject) {
         newman.run({
             collection: collection,
-            environment:file_environment,
+            //environment:file_environments,
             iterationCount: 1,
-            reporters: 'json'
+            reporters: 'cli'
         }, function (err) {
             if (err) { return reject(err) }
             resolve()
@@ -45,7 +54,6 @@ function contains(a, obj) {
     }
     return false;
 }
-
 
 function getJson(jsonReult){
 
@@ -229,8 +237,16 @@ function getResult(){
         //将对象转换为json格式
         console.log('------------------------Url test detail      -------------------------------------')
         //console.log(infoArray[0].testUrlInfo);
+        var csvArray=new Array();
         infoArray[0].testUrlInfo.forEach(function(testInfo){
-
+            var csv=new Object();
+            csv.url=testInfo.url;
+            csv.responseMaxTime=testInfo.maxtime+"ms";
+            csv.responseMinTime=testInfo.mintime+"ms";
+            csv.responseAvergeTime=(testInfo.responseTime/testInfo.count).toFixed(1)+"ms";
+            csv.responseSize=testInfo.responseSize+'b';
+            csv.requestCount=testInfo.count;
+            csvArray.push(csv);
             console.log("url:"+testInfo.url);
             console.log("responseMaxTime:"+testInfo.maxtime+"ms");
             console.log("responseMinTime:"+testInfo.mintime+"ms");
@@ -262,6 +278,9 @@ function getResult(){
         console.log("average response time: "+(infoArray[0].testTotalInfo.AverageresponseTime/infoArray[0].testTotalInfo.runCount).toFixed(1)+"ms");
         console.log('-----------------------------------------------------------------')
 
+
+        CreateCSV( csvArray);
+
         //res.writeHead(200, {'Content-Type': 'application/json'});
         //res.end(finalInfoStr);
 
@@ -269,4 +288,51 @@ function getResult(){
         // console.log("total data received:"+jsonReult.run.transfers.responseTotal/1024);
         // console.log("average response time:"+jsonReult.run.timings.responseAverage);
     });
+}
+
+
+var stream = null;
+var paramArgus = process.argv.splice(2);
+if(!paramArgus || paramArgus.length == 0){
+    stream = fs.createWriteStream("./CSV/new.csv");
+}else{
+    stream = fs.createWriteStream(paramArgus[0]);
+}
+stream.on("finish", function(){
+    console.log("dump to csv ok!");
+});
+
+
+function CreateCSV(jsonContent){
+    csv.write(jsonContent, {headers: true}).pipe(stream);
+}
+
+function deleteFile(path) {
+
+    var files = [];
+
+    if( fs.existsSync(path) ) {
+
+        files = fs.readdirSync(path);
+
+        files.forEach(function(file,index){
+
+            var curPath = path + "/" + file;
+
+            if(fs.statSync(curPath).isDirectory()) { // recurse
+
+                deleteFolderRecursive(curPath);
+
+            } else { // delete file
+
+                fs.unlinkSync(curPath);
+
+            }
+
+        });
+
+        fs.rmdirSync(path);
+
+    }
+
 }
